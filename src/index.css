@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: sans-serif;
+  background-color: #fff;
+  margin-inline: auto;
+}
+
+input,
+select {
+  background-color: inherit;
+  border: inherit;
+  outline: none;
+  color: inherit;
+}
