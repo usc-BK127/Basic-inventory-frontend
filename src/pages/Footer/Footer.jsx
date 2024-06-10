@@ -2,13 +2,14 @@
 import { Link } from "react-router-dom";
 
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
+import logoBlack from "../../../public/image/logo-only.png";
 
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-gray-300 py-6 rounded">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
         <div className="flex flex-col items-center">
-          <img src="/public/image/logo-only.png" width="100px" alt="" />
+          <img src={logoBlack} width="100px" alt="logo" />
           <h3 className="text-white text-lg mb-2">Product Management</h3>
         </div>
         <div className="flex flex-col items-center sm:items-start">
@@ -16,7 +17,7 @@ const Footer = () => {
           <nav>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="hover:text-green-500">
+                <Link to="/all-products" className="hover:text-green-500">
                   Products
                 </Link>
               </li>
@@ -26,7 +27,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/category" className="hover:text-green-500">
+                <Link to="/" className="hover:text-green-500">
                   Categories
                 </Link>
               </li>

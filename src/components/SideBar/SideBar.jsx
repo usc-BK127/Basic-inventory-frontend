@@ -1,10 +1,10 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FiAlignLeft } from "react-icons/fi";
 
 import { MdOutlineCategory, MdShoppingBag } from "react-icons/md";
 import { TbReport } from "react-icons/tb";
 import { IoIosArrowDown } from "react-icons/io";
-import { useState } from "react";
+import logo from "../../../public/image/logo.png";
 
 function Sidebar() {
   const [open, setOpen] = useState(false);
@@ -18,10 +18,18 @@ function Sidebar() {
           className="drawer-overlay"
         ></label>
         <ul className="font-custom text-base menu pt-2 lg:pt-2 w-60 lg:rounded-md min-h-full lg:min-h-[100%] bg-white text-black">
-          <img src="/public/image/logo.png" alt="" />
+          <img src={logo} alt="logo" />
           <li onClick={() => setOpen(false)} className="mt-4 lg:mt-0">
             <Link
               to="/"
+              className="text-[#292f46] flex items-center gap-[10px]"
+            >
+              <MdOutlineCategory className="text-[#adb5bd] text-2xl" /> Category
+            </Link>
+          </li>
+          <li onClick={() => setOpen(false)} className="">
+            <Link
+              to="/all-products"
               className="text-[#292f46] flex items-center gap-[10px]"
             >
               <MdShoppingBag className="text-[#adb5bd] text-2xl" /> Products
@@ -52,14 +60,6 @@ function Sidebar() {
             >
               <li className="cursor-pointer pt-2">All Products</li>
             </ul>
-          </li>
-          <li onClick={() => setOpen(false)}>
-            <Link
-              to="/category"
-              className="text-[#292f46] flex items-center gap-[10px]"
-            >
-              <MdOutlineCategory className="text-[#adb5bd] text-2xl" /> Category
-            </Link>
           </li>
         </ul>
       </div>

@@ -1,4 +1,5 @@
 import SideBarResponsive from "../../components/SideBarResponsive/SideBarResponsive";
+import avatar from "../../../public/image/avatar.png";
 
 const Header = () => {
   return (
@@ -9,10 +10,10 @@ const Header = () => {
         </div>
         <div>
           <img
-            src="/public/image/avatar.png"
+            src={avatar}
             width="40px"
             className="rounded-full cursor-pointer shadow-md"
-            alt=""
+            alt="avatar"
           />
         </div>
       </div>
