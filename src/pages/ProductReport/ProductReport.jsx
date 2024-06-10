@@ -4,14 +4,15 @@ import axios from "axios";
 
 const ProductReport = () => {
   const [products, setProducts] = useState([]);
-
   useEffect(() => {
     fetchProducts();
   }, []);
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/products");
+      const response = await axios.get(
+        "https://bib-one.vercel.app/api/products"
+      );
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);

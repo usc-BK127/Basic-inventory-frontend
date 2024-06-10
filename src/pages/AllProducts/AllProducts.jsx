@@ -6,7 +6,7 @@ import axios from "axios";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
-  console.log(products);
+
   const [categories, setCategories] = useState([]);
   const [form, setForm] = useState({
     name: "",
@@ -15,7 +15,6 @@ const AllProducts = () => {
     price: "",
     quantity: "",
   });
-  console.log(form);
   const [editProductId, setEditProductId] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -26,7 +25,9 @@ const AllProducts = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/products");
+      const response = await axios.get(
+        "https://bib-one.vercel.app/api/products"
+      );
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -35,7 +36,9 @@ const AllProducts = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/categories");
+      const response = await axios.get(
+        "https://bib-one.vercel.app/api/categories"
+      );
       setCategories(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -61,7 +64,7 @@ const AllProducts = () => {
         formData.append("file", form.image);
 
         const uploadResponse = await axios.post(
-          "http://localhost:3001/api/upload",
+          "https://bib-one.vercel.app/api/upload",
           formData,
           {
             headers: {
@@ -69,21 +72,24 @@ const AllProducts = () => {
             },
           }
         );
-        imageUrl = uploadResponse.data.imageUrl;
+        imageUrl = uploadResponse.data.imageBuffer;
       }
 
       const productData = {
         ...form,
         image: imageUrl,
       };
-      console.log(productData);
+
       if (editProductId) {
         await axios.put(
-          `http://localhost:3001/api/products/${editProductId}`,
+          `https://bib-one.vercel.app/api/products/${editProductId}`,
           productData
         );
       } else {
-        await axios.post("http://localhost:3001/api/products", productData);
+        await axios.post(
+          "https://bib-one.vercel.app/api/products",
+          productData
+        );
       }
       fetchProducts();
       setForm({
@@ -101,14 +107,17 @@ const AllProducts = () => {
   };
 
   const handleEdit = (product) => {
-    setForm(product);
+    setForm({
+      ...product,
+      image: product.image.replace(/^data:image\/[a-z]+;base64,/, ""),
+    });
     setEditProductId(product.id);
     setShowModal(true);
   };
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3001/api/products/${id}`);
+      await axios.delete(`https://bib-one.vercel.app/api/products/${id}`);
       fetchProducts();
     } catch (error) {
       console.error("Error deleting product:", error);
@@ -136,7 +145,7 @@ const AllProducts = () => {
               >
                 <div className="h-56">
                   <img
-                    src={`http://localhost:3001${product.image}`}
+                    src={product.image}
                     alt={product.name}
                     className="w-full h-full object-cover"
                   />

@@ -12,7 +12,7 @@ const Category = () => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3001/api/categories"
+          "https://bib-one.vercel.app/api/categories"
         );
         setCategories(response.data);
       } catch (error) {
@@ -32,7 +32,7 @@ const Category = () => {
       // Update existing category
       try {
         const response = await axios.put(
-          `http://localhost:3001/api/categories/${currentCategory.id}`,
+          `https://bib-one.vercel.app/api/categories/${currentCategory.id}`,
           { name: currentCategory.name }
         );
         setCategories(
@@ -48,7 +48,7 @@ const Category = () => {
       // Add new category
       try {
         const response = await axios.post(
-          "http://localhost:3001/api/categories",
+          "https://bib-one.vercel.app/api/categories",
           { name: currentCategory.name }
         );
         setCategories([...categories, response.data]);
@@ -69,7 +69,7 @@ const Category = () => {
 
   const deleteCategory = async (id) => {
     try {
-      await axios.delete(`http://localhost:3001/api/categories/${id}`);
+      await axios.delete(`https://bib-one.vercel.app/api/categories/${id}`);
       setCategories(categories.filter((cat) => cat.id !== id));
     } catch (error) {
       console.error("Error deleting category:", error);
