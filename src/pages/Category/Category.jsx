@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Category = () => {
   const [categories, setCategories] = useState([]);
@@ -27,7 +29,21 @@ const Category = () => {
     setCurrentCategory({ ...currentCategory, name: e.target.value });
   };
 
+  const validateCategory = () => {
+    if (currentCategory.name.trim() === "") {
+      toast.error("Category name cannot be empty", {
+        toastId: "error",
+      });
+      return false;
+    }
+    return true;
+  };
+
   const handleSave = async () => {
+    if (!validateCategory()) {
+      return;
+    }
+
     if (currentCategory.id) {
       // Update existing category
       try {
@@ -41,8 +57,14 @@ const Category = () => {
           )
         );
         setCurrentCategory({ id: null, name: "" });
+        toast.success("Category updated successfully", {
+          toastId: "successfully",
+        });
       } catch (error) {
         console.error("Error updating category:", error);
+        toast.error("Error updating category", {
+          toastId: "error",
+        });
       }
     } else {
       // Add new category
@@ -53,8 +75,14 @@ const Category = () => {
         );
         setCategories([...categories, response.data]);
         setCurrentCategory({ id: null, name: "" });
+        toast.success("Category added successfully", {
+          toastId: "successfully",
+        });
       } catch (error) {
         console.error("Error adding category:", error);
+        toast.error("Error adding category", {
+          toastId: "error",
+        });
       }
     }
   };
@@ -71,13 +99,20 @@ const Category = () => {
     try {
       await axios.delete(`https://bib-one.vercel.app/api/categories/${id}`);
       setCategories(categories.filter((cat) => cat.id !== id));
+      toast.success("Category deleted successfully", {
+        toastId: "successfully",
+      });
     } catch (error) {
       console.error("Error deleting category:", error);
+      toast.error("Error deleting category", {
+        toastId: "error",
+      });
     }
   };
 
   return (
     <div className="bg-gray-50 min-h-[82vh]">
+      <ToastContainer />
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h1 className="text-xl font-bold text-gray-600">Manage Categories</h1>
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4 mb-4 mt-4">

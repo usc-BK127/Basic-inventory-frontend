@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { IoIosClose } from "react-icons/io";
-
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
-
   const [categories, setCategories] = useState([]);
   const [form, setForm] = useState({
     name: "",
@@ -17,6 +17,7 @@ const AllProducts = () => {
   });
   const [editProductId, setEditProductId] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     fetchProducts();
@@ -54,8 +55,29 @@ const AllProducts = () => {
     setForm({ ...form, image: e.target.files[0] });
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    if (!form.name.trim()) newErrors.name = "Name is required";
+    if (!form.category.trim()) newErrors.category = "Category is required";
+    if (!form.price || form.price <= 0)
+      newErrors.price = "Valid price is required";
+    if (!form.quantity || form.quantity < 0)
+      newErrors.quantity = "Valid quantity is required";
+    if (!form.image) newErrors.image = "Image is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) {
+      toast.error("Please correct the highlighted errors.", {
+        toastId: "error",
+      });
+      return;
+    }
+
     try {
       let imageUrl = form.image;
 
@@ -85,11 +107,17 @@ const AllProducts = () => {
           `https://bib-one.vercel.app/api/products/${editProductId}`,
           productData
         );
+        toast.success("Product updated successfully", {
+          toastId: "successfully",
+        });
       } else {
         await axios.post(
           "https://bib-one.vercel.app/api/products",
           productData
         );
+        toast.success("Product added successfully", {
+          toastId: "successfully",
+        });
       }
       fetchProducts();
       setForm({
@@ -103,6 +131,9 @@ const AllProducts = () => {
       setShowModal(false);
     } catch (error) {
       console.error("Error submitting data:", error);
+      toast.error("Error submitting data", {
+        toastId: "error",
+      });
     }
   };
 
@@ -119,13 +150,20 @@ const AllProducts = () => {
     try {
       await axios.delete(`https://bib-one.vercel.app/api/products/${id}`);
       fetchProducts();
+      toast.success("Product deleted successfully", {
+        toastId: "successfully",
+      });
     } catch (error) {
       console.error("Error deleting product:", error);
+      toast.error("Error deleting product", {
+        toastId: "error",
+      });
     }
   };
 
   return (
     <div className="max-w-7xl mx-auto min-h-[82vh]">
+      <ToastContainer />
       <div className="flex items-center justify-between gap-2 mb-4">
         <h1 className="text-xl font-bold text-gray-600">Products List</h1>
         <button
@@ -196,51 +234,90 @@ const AllProducts = () => {
               </button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <input
-                type="text"
-                name="name"
-                placeholder="Name"
-                value={form.name}
-                onChange={handleInputChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-              <input
-                type="file"
-                name="image"
-                onChange={handleFileChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-              <select
-                name="category"
-                value={form.category}
-                onChange={handleInputChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              >
-                <option value="" disabled>
-                  Select a category
-                </option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.name}>
-                    {category.name}
+              <div>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Name"
+                  value={form.name}
+                  onChange={handleInputChange}
+                  className={`w-full p-2 border rounded ${
+                    errors.name ? "border-red-500" : "border-gray-300"
+                  }`}
+                />
+                {errors.name && (
+                  <span className="text-red-500 text-sm">{errors.name}</span>
+                )}
+              </div>
+              <div>
+                <input
+                  type="file"
+                  name="image"
+                  onChange={handleFileChange}
+                  className={`w-full p-2 border rounded ${
+                    errors.image ? "border-red-500" : "border-gray-300"
+                  }`}
+                />
+                {errors.image && (
+                  <span className="text-red-500 text-sm">{errors.image}</span>
+                )}
+              </div>
+              <div>
+                <select
+                  name="category"
+                  value={form.category}
+                  onChange={handleInputChange}
+                  className={`w-full p-2 border rounded ${
+                    errors.category ? "border-red-500" : "border-gray-300"
+                  }`}
+                >
+                  <option value="" disabled>
+                    Select a category
                   </option>
-                ))}
-              </select>
-              <input
-                type="number"
-                name="price"
-                placeholder="Price"
-                value={form.price}
-                onChange={handleInputChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-              <input
-                type="number"
-                name="quantity"
-                placeholder="Quantity"
-                value={form.quantity}
-                onChange={handleInputChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              />
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.name}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.category && (
+                  <span className="text-red-500 text-sm">
+                    {errors.category}
+                  </span>
+                )}
+              </div>
+              <div>
+                <input
+                  type="number"
+                  name="price"
+                  placeholder="Price"
+                  value={form.price}
+                  onChange={handleInputChange}
+                  className={`w-full p-2 border rounded ${
+                    errors.price ? "border-red-500" : "border-gray-300"
+                  }`}
+                />
+                {errors.price && (
+                  <span className="text-red-500 text-sm">{errors.price}</span>
+                )}
+              </div>
+              <div>
+                <input
+                  type="number"
+                  name="quantity"
+                  placeholder="Quantity"
+                  value={form.quantity}
+                  onChange={handleInputChange}
+                  className={`w-full p-2 border rounded ${
+                    errors.quantity ? "border-red-500" : "border-gray-300"
+                  }`}
+                />
+                {errors.quantity && (
+                  <span className="text-red-500 text-sm">
+                    {errors.quantity}
+                  </span>
+                )}
+              </div>
               <button
                 type="submit"
                 className="w-full p-2 text-white bg-[#3bb77e] rounded hover:bg-[#29a56c] transition"
